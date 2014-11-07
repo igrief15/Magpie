@@ -119,12 +119,11 @@ public class Magpie
       {
         response = transformYouMeStatement(statement);
       }
-      else if (psn1 >= 0
-            && findKeyword(statement, "you", psn1) >= 0)
+      else if (psn1 >=0 
+                 && findKeyword(statement, "I", psn1) >= 0)
       {
         response = transformYouIStatement(statement);
       }
-      
       
       else
       {
@@ -176,7 +175,19 @@ public class Magpie
    * @param statement the user statement, assumed to contain "you" followed by "me"
    * @return the transformed statement
    */
- 
+  private String transformYouIStatement(String statement)
+  {
+    statement = statement.trim();
+    String lastChar = statement.substring(statement.length() - 1);
+    if (lastChar.equals("."))
+    {
+      statement = statement.substring(0, statement.length() - 1);
+    }
+    int psnOfI = findKeyword (statement, "I", 0);
+    int psnOfYou = findKeyword (statement, "you", statement.lastIndexOf("you")-3 );
+    String restOfStatement = statement.substring(psnOfYou + 2, psnOfI).trim();
+    return "Why do you " + restOfStatement + " me?";
+  }
   
   private String transformYouMeStatement(String statement)
   {
@@ -193,20 +204,6 @@ public class Magpie
     return "What makes you think that I " + restOfStatement + " you?";
   }
   
-  private String transformYouIStatement(String statement)
-  {
-    //  Remove the final period, if there is one
-    statement = statement.trim();
-    String lastChar = statement.substring(statement.length() - 3);
-    if (lastChar.equals("."))
-    {
-      statement = statement.substring(0, statement.length() - 3);
-    }
-    int psnOfYou = findKeyword (statement, "I", 0);
-    int psnOfMe = findKeyword (statement, "you", psnOfYou + 1);
-    String restOfStatement = statement.substring(psnOfYou + 1, psnOfMe).trim();
-    return "Why do you " + restOfStatement + " me?";
-  }
   
   
   
