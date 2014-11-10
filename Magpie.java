@@ -107,6 +107,10 @@ public class Magpie
     {
       response = transformIsStatement(statement);
     }
+    else if ((findKeyword(statement, "are", 0) >= 0) && !(findKeyword(statement, "you", 0) >=0))
+    {
+      response = transformAreStatement(statement);
+    }
     
     else if (findKeyword(statement, "I want", 0) >= 0)
     {
@@ -148,6 +152,7 @@ public class Magpie
   private String transformIsStatement(String statement)
   {
     statement = statement.trim();
+    statement = statement.toLowerCase();
     String lastChar = statement.substring(statement.length() - 1);
     if (lastChar.equals("."))
     {
@@ -158,6 +163,22 @@ public class Magpie
     String restOfStatement = statement.substring(psn + 2).trim();
     return "Why is "+ beforeStatement+ " " + restOfStatement + "?";
   }
+  
+  private String transformAreStatement(String statement)
+  {
+    statement = statement.trim();
+    statement = statement.toLowerCase();
+    String lastChar = statement.substring(statement.length() - 1);
+    if (lastChar.equals("."))
+    {
+      statement = statement.substring(0, statement.length() - 1);
+    }
+    int psn = findKeyword (statement, "are", 0);
+    String beforeStatement = statement.substring(0,psn).trim();
+    String restOfStatement = statement.substring(psn + 3).trim();
+    return "Why are "+ beforeStatement+ " " + restOfStatement + "?";
+  }
+  
   
   private String transformIWantStatement(String statement)
   {
