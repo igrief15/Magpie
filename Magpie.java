@@ -103,6 +103,10 @@ public class Magpie
     {
       response = transformIWantToStatement(statement);
     }
+    else if (findKeyword(statement, "is", 0) >= 0)
+    {
+      response = transformIsStatement(statement);
+    }
     
     else if (findKeyword(statement, "I want", 0) >= 0)
     {
@@ -121,7 +125,7 @@ public class Magpie
         response = transformYouMeStatement(statement);
       }
       else if (psn1 >= 0
-            && findKeyword(statement, "you", psn1) >= 0)
+                 && findKeyword(statement, "you", psn1) >= 0)
       {
         response = transformYouIStatement(statement);
       }
@@ -141,6 +145,20 @@ public class Magpie
    * @param statement the user statement, assumed to contain "I want to"
    * @return the transformed statement
    */
+  private String transformIsStatement(String statement)
+  {
+    statement = statement.trim();
+    String lastChar = statement.substring(statement.length() - 1);
+    if (lastChar.equals("."))
+    {
+      statement = statement.substring(0, statement.length() - 1);
+    }
+    int psn = findKeyword (statement, "is", 0);
+    String beforeStatement = statement.substring(0,psn).trim();
+    String restOfStatement = statement.substring(psn + 2).trim();
+    return "Why is "+ beforeStatement+ " " + restOfStatement + "?";
+  }
+  
   private String transformIWantStatement(String statement)
   {
     //  Remove the final period, if there is one
@@ -177,7 +195,7 @@ public class Magpie
    * @param statement the user statement, assumed to contain "you" followed by "me"
    * @return the transformed statement
    */
- 
+  
   
   private String transformYouMeStatement(String statement)
   {
@@ -301,20 +319,20 @@ public class Magpie
    * @return a non-committal string
    */
   private String getRandomResponse ()
- {
-  Random r = new Random ();
-  return randomResponses [r.nextInt(randomResponses.length)];
- }
- 
- private String [] randomResponses = {"Interesting, tell me more",
-   "Hmmm.",
-   "Do you really think so?",
-   "You don't say.",
-   "Mmkay.",
-   "Oh, really?",
-   "Okay.",
-   "Huh.",
-   "Mm.",
-   "Tell me more about this."
- };
+  {
+    Random r = new Random ();
+    return randomResponses [r.nextInt(randomResponses.length)];
+  }
+  
+  private String [] randomResponses = {"Interesting, tell me more",
+    "Hmmm.",
+    "Do you really think so?",
+    "You don't say.",
+    "Mmkay.",
+    "Oh, really?",
+    "Okay.",
+    "Huh.",
+    "Mm.",
+    "Tell me more about this."
+  };
 }
