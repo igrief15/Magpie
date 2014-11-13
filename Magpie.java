@@ -54,6 +54,10 @@ public class Magpie
     {
       response = "Mr. Kiang is the best teacher ever!";
     }
+    else if (findKeyword(statement, "Hello") >= 0)
+    {
+      response = "Hello. How are you?";
+    }
     else if (findKeyword(statement, "Landgraf") >= 0)
     {
       response = "Mr. Landgraf is the best teacher ever!";
@@ -116,7 +120,19 @@ public class Magpie
     {
       response = transformIWantStatement(statement);
     }
-    
+    else if (findKeyword(statement, "You are", 0) >=0)
+    {
+      response = transformYouAreStatement(statement);
+    }
+    else if (findKeyword(statement, "You were", 0) >=0)
+    {
+      response = transformYouWereStatement(statement);
+    }
+      else if (findKeyword(statement, "I was", 0) >=0)
+    {
+      response = transformIWasStatement(statement);
+    }
+
     else
     {
       // Look for a two word (you <something> me)
@@ -143,12 +159,80 @@ public class Magpie
     return response;
   }
   
+  /*  
+   I threw the ball to you.
+   why did you throw the ball to me?
+   -irregular past tense verbs, 
+   
+   I have been waiting, Obi-Wan.
+   Why have you been waiting?
+   -in a normal sentence, maybe 'i have been waiting for....'
+   -so if 'for' does not appear after waiting, then cut out the rest
+   
+    We had not read the books.
+   Why had we not read the books?
+   -had works
+   -just have to change the you to i and vice versa
+   -i dont know how to differentiate between 'I had a puppy, but it died' and 'I had to go to the bathroom' or 'I had changed the password a month before I was hacked'. 
+   -its entirely contextual and doesnt really work as a rule
+   
+  
+  
+
+   I worked hard.
+   why did you work hard?
+   -a pronoun, and then a verb, with -ed suffix
+   
+   I tallied the results.
+   why did you tally the results?
+   "
+   
+   */
+  
   /**
    * Take a statement with "I want to <something>." and transform it into 
    * "What would it mean to <something>?"
    * @param statement the user statement, assumed to contain "I want to"
    * @return the transformed statement
    */
+  
+  
+  /*
+  I was hoping we would meet.
+   Why were you hoping we would meet?
+   -I was dying of cancer
+   Why were you...
+   -I was (verb)
+   -I was cold
+   Why were you cold
+   */
+private String transformYouWereStatement(String statement)
+  {
+    statement = statement.trim();
+    statement = statement.toLowerCase();
+    String lastChar = statement.substring(statement.length() - 1);
+    if (lastChar.equals("."))
+    {
+      statement = statement.substring(0, statement.length() - 1);
+    }
+    int psn = findKeyword (statement, "You were", 0);
+    String restOfStatement = statement.substring(psn + 8).trim();
+    return "Why was I " + restOfStatement + "?";
+  }
+private String transformIWasStatement(String statement)
+  {
+    statement = statement.trim();
+    statement = statement.toLowerCase();
+    String lastChar = statement.substring(statement.length() - 1);
+    if (lastChar.equals("."))
+    {
+      statement = statement.substring(0, statement.length() - 1);
+    }
+    int psn = findKeyword (statement, "I was", 0);
+    String restOfStatement = statement.substring(psn + 5).trim();
+    return "Why were you " + restOfStatement + "?";
+  }
+    
   private String transformIsStatement(String statement)
   {
     statement = statement.trim();
@@ -162,6 +246,20 @@ public class Magpie
     String beforeStatement = statement.substring(0,psn).trim();
     String restOfStatement = statement.substring(psn + 2).trim();
     return "Why is "+ beforeStatement+ " " + restOfStatement + "?";
+  }
+  
+  private String transformYouAreStatement(String statement) //You are intelligent / You are a nice person, just take after 'are'
+  {
+    statement = statement.trim();
+    statement = statement.toLowerCase();
+    String lastChar = statement.substring(statement.length() - 1);
+    if (lastChar.equals("."))
+    {
+      statement = statement.substring(0, statement.length() - 1);
+    }
+    int psn = findKeyword (statement, "are", 0);
+    String restOfStatement = statement.substring(psn + 3).trim();
+    return "Why am I " + restOfStatement + "?";
   }
   
   private String transformAreStatement(String statement)
@@ -178,7 +276,7 @@ public class Magpie
     String restOfStatement = statement.substring(psn + 3).trim();
     return "Why are "+ beforeStatement+ " " + restOfStatement + "?";
   }
-  
+  //when inputting a 'have' statement, it messes up, not sure how to solve for have statements, past tense
   
   private String transformIWantStatement(String statement)
   {
